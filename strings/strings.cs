@@ -16,7 +16,7 @@ namespace Strings {
         public const string BTN_SAVE = "Save";
 
         public const string INFO = "Information";
-        public const string DIST_WARNING = "Distance (integer)";
+        public const string DIST_WARNING = "Distance (double)";
         public const string WEIGHT_WARNING = "Weight (integer)";
 
         public const string A_FORM = "Algorithm form";
@@ -29,6 +29,7 @@ namespace Strings {
         public const string DAGS_ONLY_TIP = "This algorithm can be applied only to weighted DAGs.";
         public const string MANUAL_MODE_TIP = "Algorithm running... Press 'Slash' key.";
         public const string NEW_GRAPH_TIP = "Changes of setting 'Directed/Undirected' creates a new graph. Your current graph may be lost.";
+        public const string NO_RUNNING_ALGO_TIP = "Can be changed only if no algorithm is running.";
         public const string PRIMS_TIP = "This algorithm can be applied only to undirected graphs with distances.";
 
         public const string SUCCESS = "Algorithm finished running. See result...";

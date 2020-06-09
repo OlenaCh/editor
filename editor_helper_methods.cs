@@ -17,6 +17,8 @@ namespace GraphEditor {
         Dictionary<string, PointD> distancesPos =
             new Dictionary<string, PointD>();
 
+        string filepath = "";
+
         /*
          * Graph related
          */
@@ -68,6 +70,7 @@ namespace GraphEditor {
             }
 
             algorithmStatus.Text = Strings.SUCCESS;
+            selected = 0;
 
             if (prims) buildSpanningTree(path);
             else buildFoundPath(path);
@@ -195,7 +198,10 @@ namespace GraphEditor {
             );
 
             if (dialog.Run() == (int)ResponseType.Accept) {
-                if (action == "Save") { graph.toFile(dialog.Filename); }
+                if (action == "Save") {
+                    filepath = dialog.Filename;
+                    graph.toFile(filepath);
+                }
                 else {
                     newGraph();
                     graph.fromFile(dialog.Filename);

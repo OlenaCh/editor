@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 
 namespace Algorithms {
-    using MyCollection;
     using Graphs;
 
     public class Algorithm {
@@ -13,10 +12,7 @@ namespace Algorithms {
             new SortedDictionary<int, bool>();
         protected bool searching = false;
 
-        public Algorithm(Graph graph) {
-            this.graph = graph;
-            foreach (var vertex in graph.vertices()) visited[vertex] = false;
-        }
+        public Algorithm(Graph graph) { this.graph = graph; }
 
         public virtual void search() {}
         public virtual string result() { return ""; }

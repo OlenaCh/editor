@@ -4,10 +4,15 @@ using System.Linq;
 using System.Numerics;
 
 namespace Algorithms {
-    using MyCollection;
     using Graphs;
 
     class LongestPathInDAG : Algorithm {
+        class DataTuple {
+            public int ttl;
+            public string str;
+            public DataTuple(string s, int t) { str = s; ttl = t; }
+        }
+
         const int MIN = -10000;
 
         Stack<int> stack = new Stack<int>();
@@ -76,6 +81,8 @@ namespace Algorithms {
         public override string frontierEdge() { return edge; }
 
         void initValues() {
+            foreach (var vertex in graph.vertices()) visited[vertex] = false;
+
             sort();
 
             total = new SortedDictionary<int, DataTuple>();

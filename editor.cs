@@ -21,7 +21,7 @@ namespace GraphEditor {
                 { Strings.DIRECTED, false },
                 { Strings.MANUAL, false },
                 { Strings.AUTO, true },
-                { Strings.DISTANCES, true }
+                { Strings.DISTANCES, false }
             };
         public static int start, end;
         public static bool directionsUpdate = false;
@@ -97,7 +97,7 @@ namespace GraphEditor {
                     { "Shortest path", onShortestPathClicked },
                     { "Longest path (DAGs only)", onLongestPathClicked },
                     { "Prim's algorithm", onPrimsAlgoritmClicked },
-                    { "Stop/Clear", onStopClicked }
+                    { "Stop/Clear status", onStopClicked }
                 }
             };
 

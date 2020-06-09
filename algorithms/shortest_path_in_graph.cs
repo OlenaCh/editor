@@ -4,10 +4,20 @@ using System.Linq;
 using System.Numerics;
 
 namespace Algorithms {
-    using MyCollection;
     using Graphs;
 
     class ShortestPathInGraph : Algorithm {
+        class Node<T> where T : IComparable<T> {
+            public T val;
+            public Node<T> parent, next;
+
+            public Node(T v, Node<T> p = null, Node<T> n = null) {
+                val = v;
+                parent = p;
+                next = n;
+            }
+        }
+
         int start, end;
 
         Queue<Node<int>> queue = new Queue<Node<int>>();
@@ -50,6 +60,8 @@ namespace Algorithms {
         }
 
         void initValues() {
+            foreach (var vertex in graph.vertices()) visited[vertex] = false;
+
             curr = new Node<int>(start);
             visited[curr.val] = true;
 

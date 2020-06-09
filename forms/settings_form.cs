@@ -65,7 +65,7 @@ namespace Forms {
                 5
             );
 
-            vbox.PackStart(createControlButtons(), false, true, 5);
+            vbox.PackStart(createControlButtons(), false, false, 5);
 
             return vbox;
         }
@@ -88,11 +88,11 @@ namespace Forms {
             HBox hbox = new HBox();
 
             Button saveBtn = new Button(Strings.BTN_SAVE);
-            hbox.PackStart(saveBtn, false, false, 5);
+            hbox.PackStart(saveBtn, true, true, 5);
             saveBtn.Clicked += onSaveBtn;
 
             Button cancelBtn = new Button(Strings.NO_RESPONSE);
-            hbox.PackStart(cancelBtn, false, false, 5);
+            hbox.PackStart(cancelBtn, true, true, 5);
             cancelBtn.Clicked += delegate { Destroy(); };
 
             return hbox;

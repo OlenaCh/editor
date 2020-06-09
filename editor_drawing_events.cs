@@ -112,7 +112,7 @@ namespace GraphEditor {
                 if (settings[Strings.DISTANCES] && edge != "") {
                     string[] vertices = edge.Split();
                     var isNumeric =
-                        int.TryParse(getNewEdgeDistance(), out int n);
+                        double.TryParse(getNewEdgeDistance(), out double n);
 
                     if (isNumeric)
                         graph.setDistance(

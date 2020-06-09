@@ -22,8 +22,8 @@ namespace Graphs {
         }
 
         // Data containers
-        protected SortedDictionary<int, SortedDictionary<int, int>> vertex =
-            new SortedDictionary<int, SortedDictionary<int, int>>();
+        protected SortedDictionary<int, SortedDictionary<int, double>> vertex =
+            new SortedDictionary<int, SortedDictionary<int, double>>();
         protected SortedDictionary<int, int> weight =
             new SortedDictionary<int, int>();
 
@@ -33,15 +33,15 @@ namespace Graphs {
         public int addVertex() {
             int id = 1;
             while (vertex.ContainsKey(id)) { ++id; }
-            vertex[id] = new SortedDictionary<int, int>();
+            vertex[id] = new SortedDictionary<int, double>();
             weight[id] = 0;
             onChange(Events.VERTEX_ADDED, id);
             return id;
         }
 
         public virtual void connect(int i, int j) {
-            vertex[i].Add(j, 0);
-            vertex[j].Add(i, 0);
+            vertex[i].Add(j, -1.0);
+            vertex[j].Add(i, -1.0);
             onChange(Events.EDGE_ADDED, j);
         }
 
@@ -83,17 +83,16 @@ namespace Graphs {
         }
 
         // Methods dealing with distance
-        public void setDistance(int a, int b, int dist) {
-            if (vertex.ContainsKey(a) && vertex[a].ContainsKey(b)) {
-                vertex[a][b] = dist;
-                onChange(Events.DISTANCE_CHANGED, a);
-            }
+        public virtual void setDistance(int a, int b, double dist) {
+            vertex[a][b] = dist;
+            vertex[b][a] = dist;
+            onChange(Events.DISTANCE_CHANGED, a);
         }
 
-        public int getDistance(int a, int b) {
+        public double getDistance(int a, int b) {
             if (vertex.ContainsKey(a) && vertex[a].ContainsKey(b))
                 return vertex[a][b];
-            return 0;
+            return -1.0;
         }
     }
 }

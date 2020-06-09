@@ -16,12 +16,23 @@ namespace GraphEditor {
         // Menu Bar Events
         void onNewClicked(object sender, EventArgs args) { newGraph(); drawGraph(); }
         void onOpenClicked(object sender, EventArgs args) { fileAction("Open"); }
-        void onSaveClicked(object sender, EventArgs args) { fileAction("Save"); }
         void onQuitClicked(object sender, EventArgs args) { Application.Quit(); }
 
+        void onSaveClicked(object sender, EventArgs args) {
+            if (filepath != "") {
+                graph.toFile(filepath);
+                return;
+            }
+
+            fileAction("Save");
+        }
+
         void onSettignsClicked(object sender, EventArgs args) {
-            Gtk.Window form = new SettingsForm();
-            form.Destroyed += onSettingsFormDestroyed;
+            if (!algorithmRunning) {
+                Gtk.Window form = new SettingsForm();
+                form.Destroyed += onSettingsFormDestroyed;
+            }
+            else showUserInfo(Strings.NO_RUNNING_ALGO_TIP);
         }
 
         void onShortestPathClicked(object sender, EventArgs args) {

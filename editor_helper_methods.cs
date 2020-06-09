@@ -204,6 +204,7 @@ namespace GraphEditor {
                 }
                 else {
                     newGraph();
+                    filepath = dialog.Filename;
                     graph.fromFile(dialog.Filename);
                     FileRead = true;
                     drawGraph();

@@ -36,6 +36,11 @@ namespace GraphEditor {
         }
 
         void onShortestPathClicked(object sender, EventArgs args) {
+            if (settings[Strings.WEIGHTED]) {
+                showUserInfo(Strings.SHORTEST_PATH_TIP);
+                return;
+            }
+
             Gtk.Window form = new AlgorithmForm(graph);
             form.Destroyed += onAlgorithFormDestroyed;
         }
@@ -46,7 +51,7 @@ namespace GraphEditor {
                 return;
             }
 
-            runAlgorithm(new LongestPathInDAG(graph), false);
+            runAlgorithm(new LongestPathInDAG(graph));
         }
 
         void onPrimsAlgoritmClicked(object sender, EventArgs args) {
@@ -55,19 +60,20 @@ namespace GraphEditor {
                 return;
             }
 
-            runAlgorithm(new PrimsAlgorithm(graph), true);
+            runAlgorithm(new PrimsAlgorithm(graph));
         }
 
         void onStopClicked(object sender, EventArgs args) {
             algorithm = null;
             algorithmRunning = false;
             algorithmStatus.Text = "";
+            foundResult = new List<(int, int)>();
             if (settings[Strings.MANUAL]) drawGraph();
         }
 
         // Other windows events
         void onAlgorithFormDestroyed(object sender, EventArgs args) {
-            runAlgorithm(new ShortestPathInGraph(graph, start, end), false);
+            runAlgorithm(new ShortestPathInGraph(graph, start, end));
         }
 
         void onSettingsFormDestroyed(object sender, EventArgs args) {

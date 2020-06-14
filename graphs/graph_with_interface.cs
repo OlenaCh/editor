@@ -45,7 +45,7 @@ namespace Graphs {
 
                     weight.Add(id, Int32.Parse(verticesData[1]));
                     for (int j = 2; j < verticesData.Length; j++)
-                        edges.Add(int.Parse(verticesData[j]), -1.0);
+                        edges.Add(int.Parse(verticesData[j]), 1.0);
 
                     vertex.Add(id, edges);
                 }

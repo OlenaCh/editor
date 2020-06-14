@@ -37,12 +37,12 @@ namespace GraphEditor {
 
         void drawEdges(Cairo.Context cr) {
             IEnumerable<int> vertices = graph.vertices();
-            IEnumerable<string> visited = null;
-            string current = "";
+            IEnumerable<(int, int)> visited = null;
+            IEnumerable<(int, int)> frontier = null;
 
             if (algorithmRunning) {
                 visited = algorithm.visitedEdges();
-                current = algorithm.frontierEdge();
+                frontier = algorithm.frontierEdges();
             }
 
             if (settings[Strings.DISTANCES])
@@ -51,7 +51,7 @@ namespace GraphEditor {
             foreach (var v in vertices) {
                 IEnumerable<int> neighbors = graph.neighbors(v);
                 foreach(var n in neighbors) {
-                    var color = edgeColor(v, n, visited, current);
+                    var color = edgeColor(v, n, visited, frontier);
                     drawEdge(
                         cr,
                         pos[v],
@@ -94,9 +94,6 @@ namespace GraphEditor {
                     }
                 }
             }
-
-            foundPath = new List<int>();
-            spanningTree = new List<string>();
         }
 
         void drawEdge(Cairo.Context cr,
@@ -114,21 +111,20 @@ namespace GraphEditor {
         (double Red, double Green, double Blue) edgeColor(
                                                 int v,
                                                 int n,
-                                                IEnumerable<string> visited,
-                                                string current) {
+                                                IEnumerable<(int, int)> visited,
+                                                IEnumerable<(int, int)> frontier) {
             if (!algorithmRunning) {
-                if (edgeOfFoundPath(v, n) || edgeOfFoundTree(v, n))
+                if (edgeOfFoundResult(v, n))
                     return (Red: 1.0, Green: 0.0, Blue: 0.0);
+
                 return (Red: 0.0, Green: 0.0, Blue: 0.0);
             }
 
-            string strA = v + " " + n;
-            string strB = n + " " + v;
-
             if (visited != null
-                && (visited.Contains(strA) || visited.Contains(strB)))
+                && (visited.Contains((v, n)) || visited.Contains((n, v))))
                 return (Red: 0.0, Green: 0.1, Blue: 0.9);
-            if (strA == current || strB == current)
+            if (frontier != null
+                && (frontier.Contains((v, n)) || frontier.Contains((n, v))))
                 return (Red: 0.4, Green: 0.8, Blue: 1.0);
 
             return (Red: 0.0, Green: 0.0, Blue: 0.0);

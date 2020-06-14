@@ -40,8 +40,8 @@ namespace Graphs {
         }
 
         public virtual void connect(int i, int j) {
-            vertex[i].Add(j, -1.0);
-            vertex[j].Add(i, -1.0);
+            vertex[i].Add(j, 1.0);
+            vertex[j].Add(i, 1.0);
             onChange(Events.EDGE_ADDED, j);
         }
 

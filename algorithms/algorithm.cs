@@ -6,25 +6,18 @@ using System.Numerics;
 namespace Algorithms {
     using Graphs;
 
-    public class Algorithm {
-        protected Graph graph;
-        protected SortedDictionary<int, bool> visited =
-            new SortedDictionary<int, bool>();
-        protected bool searching = false;
+    public abstract class Algorithm {
+        public abstract void search();
+        public abstract Result result();
 
-        public Algorithm(Graph graph) { this.graph = graph; }
+        public abstract void executeSearchStep();
 
-        public virtual void search() {}
-        public virtual string result() { return ""; }
+        public abstract IEnumerable<int> visitedVertices();
+        public abstract IEnumerable<int> frontierVertices();
 
-        public virtual void executeSearchStep() {}
+        public abstract IEnumerable<(int, int)> visitedEdges();
+        public abstract IEnumerable<(int, int)> frontierEdges();
 
-        public virtual IEnumerable<int> visitedVertices() { return null; }
-        public virtual IEnumerable<int> frontierVertices() { return null; }
-
-        public virtual IEnumerable<string> visitedEdges() { return null; }
-        public virtual string frontierEdge() { return null; }
-
-        public bool running() { return searching; }
+        public abstract bool running();
     }
 }

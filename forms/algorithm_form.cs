@@ -15,7 +15,7 @@ namespace Forms {
         string[] vertices;
         List<ComboBox> cbs = new List<ComboBox>();
 
-        public AlgorithmForm(Graph initialGraph) : base(Strings.A_FORM) {
+        public AlgorithmForm(Graph initialGraph) : base(Strings.SP_FORM) {
             graph = initialGraph;
             buildArrayOfVerices();
             configure();

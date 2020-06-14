@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 
 namespace GraphEditor {
+    using Algorithms;
     using Graphs;
     using Strings;
 
@@ -35,8 +36,10 @@ namespace GraphEditor {
                     break;
             }
 
-            drawGraph();
+            QueueDraw();
         }
+
+        void onExpose(object sender, EventArgs args) { drawGraph(); }
 
         void onKeyPressed(object sender, KeyPressEventArgs args) {
             if (!algorithmRunning) {
@@ -74,17 +77,13 @@ namespace GraphEditor {
 
             if (settings[Strings.MANUAL]
                 && args.Event.Key.ToString() == "slash") {
+
                 if (algorithmRunning) {
                     algorithm.executeSearchStep();
                     drawGraph();
                     algorithmRunning = algorithm.running();
                 }
-                else {
-                    displayResult(
-                        algorithm.result(),
-                        algorithm.GetType().Name == "PrimsAlgorithm"
-                    );
-                }
+                else displayResult(algorithm.result());
             }
         }
 

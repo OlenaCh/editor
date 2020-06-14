@@ -50,12 +50,12 @@ namespace GraphEditor {
         /*
          * Algorithm related
          */
-        void runAlgorithm(Algorithm algo, bool prims) {
-            algorithm = algo;
+        void runAlgorithm(Algorithm algorithm) {
+            this.algorithm = algorithm;
 
             if (settings[Strings.AUTO]) {
                 algorithm.search();
-                displayResult(algorithm.result(), prims);
+                displayResult(algorithm.result());
             }
             else {
                 algorithmRunning = algorithm.running();
@@ -63,42 +63,22 @@ namespace GraphEditor {
             }
         }
 
-        void displayResult(string path, bool prims) {
-            if (path == "unreachable") {
+        void displayResult(Result result) {
+            if (!result.buildResult()) {
                 algorithmStatus.Text = Strings.FAILURE;
                 return;
             }
 
             algorithmStatus.Text = Strings.SUCCESS;
             selected = 0;
-
-            if (prims) buildSpanningTree(path);
-            else buildFoundPath(path);
+            foundResult = result.result();
 
             drawGraph();
         }
 
-        void buildSpanningTree(string data) {
-            foreach (string pair in data.Trim().Split(';'))
-                if (pair != "") spanningTree.Add(pair);
-        }
-
-        void buildFoundPath(string data) {
-            foreach (string vertex in data.Trim().Split())
-                foundPath.Add(Int32.Parse(vertex));
-        }
-
-        bool edgeOfFoundPath(int a, int b) {
-            if (foundPath.Count <= 1) return false;
-            return foundPath.Contains(a) && foundPath.Contains(b);
-        }
-
-        bool edgeOfFoundTree(int a, int b) {
-            if (spanningTree.Count < 1) return false;
-            string strA = a.ToString();
-            string strB = b.ToString();
-            return spanningTree.Contains(strA + " " + strB)
-                   || spanningTree.Contains(strB + " " + strA);
+        bool edgeOfFoundResult(int a, int b) {
+            if (foundResult.Count < 1) return false;
+            return foundResult.Contains((a, b)) || foundResult.Contains((b, a));
         }
 
         /*
@@ -132,28 +112,15 @@ namespace GraphEditor {
         bool yInEditorRange(double val) { return val >= 20 && val <= 860; }
 
         PointD arrowCorner(PointD a, PointD b, double diff, double dir) {
-            PointD u = unitVector(a, b);
-            return perpendicularPoint(a, u, diff, dir);
+            return (new Vector(a, b, diff, dir)).arrowCornerPoint();
         }
 
         PointD arrowTip(PointD a, PointD b, double diff) {
-            PointD u = unitVector(a, b);
-            return new PointD(a.X + diff * u.X, a.Y + diff * u.Y);
+            return (new Vector(a, b, diff)).arrowTipPoint();
         }
 
         PointD distanceCoords(PointD a, PointD b) {
-            PointD mid = new PointD((a.X + b.X) / 2, (a.Y + b.Y) / 2);
-            PointD u = unitVector(new PointD(mid.X * -1.0, mid.Y * -1), a);
-            return perpendicularPoint(mid, u, 20.0, 1.0);;
-        }
-
-        PointD perpendicularPoint(PointD a, PointD u, double diff, double dir) {
-            PointD n = normalVector(u);
-            double c = diff * 2, d = diff / 2;
-            double x = a.X + c * u.X + dir * d * n.X,
-                   y = a.Y + c * u.Y - dir * d * n.Y;
-
-            return new PointD(x, y);
+            return (new Vector(a, b, 15.0)).edgeWeightPoint();
         }
 
         /*
@@ -168,21 +135,6 @@ namespace GraphEditor {
 
             distancesPos[strA] = dist;
             return true;
-        }
-
-        /*
-         * Vector related
-         */
-        PointD unitVector(PointD a, PointD b) {
-            PointD v = vector(a, b);
-            double s = Math.Sqrt(Math.Pow(v.X, 2) + Math.Pow(v.Y, 2));
-            return new PointD(v.X / s, v.Y / s);
-        }
-
-        PointD normalVector(PointD u) { return new PointD(u.Y, u.X); }
-
-        PointD vector(PointD a, PointD b) {
-            return new PointD(b.X - a.X, b.Y - a.Y);
         }
 
         /*

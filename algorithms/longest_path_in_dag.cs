@@ -15,56 +15,48 @@ namespace Algorithms {
 
         const int MIN = -10000;
 
+        Graph graph;
+        SortedDictionary<int, bool> visited = new SortedDictionary<int, bool>();
+
         Stack<int> stack = new Stack<int>();
         SortedDictionary<int, DataTuple> total;
 
-        List<string> edges = new List<string>();
-        string edge = "";
+        List<(int, int)> _visitedEdges = new List<(int, int)>();
+        List<(int, int)> _frontierEdges = new List<(int, int)>();
+
+        bool searching = false;
 
         string path = "";
         int finResult = MIN;
+        int currentVertex = -1;
 
-        int currentVertex = -1, count = 0;
-        List<int> adjacent;
-
-        public LongestPathInDAG(Graph graph) : base(graph) { initValues(); }
+        public LongestPathInDAG(Graph graph) {
+            this.graph = graph;
+            initValues();
+        }
 
         public override void search() {
-            while (stack.Count > 0) {
-                currentVertex = stack.Pop();
-
-                if (total[currentVertex].ttl != MIN)
-                    foreach(var vertex in graph.neighbors(currentVertex))
-                        step(vertex);
-            }
-
+            while (stack.Count > 0) step();
             searching = false;
         }
 
-        public override string result() {
-            if (finResult < 0) return "unreachable";
-            else return path;
+        public override Result result() {
+            if (finResult < 0) path = "unreachable";
+            return new PathResult(path);
         }
 
         public override void executeSearchStep() {
             if (stack.Count > 0) {
-                if (currentVertex < 0) {
-                    currentVertex = stack.Pop();
-                    if (total[currentVertex].ttl != MIN)
-                        adjacent = graph.neighbors(currentVertex).ToList();
-                }
+                step();
 
-                if (edge != "") edges.Add(edge);
-
-                if (count < adjacent.Count) {
-                    step(adjacent[count]);
-                    edge = currentVertex + " " + adjacent[count];
-                    count++;
-                }
-                else {
-                    currentVertex = -1;
-                    edge = "";
-                    count = 0;
+                if (currentVertex > 0) {
+                    if (_frontierEdges.Count() >= 1) {
+                        foreach (var edge in _frontierEdges)
+                            _visitedEdges.Add(edge);
+                        _frontierEdges = new List<(int, int)>();
+                    }
+                    foreach(var vertex in graph.neighbors(currentVertex))
+                        _frontierEdges.Add((currentVertex, vertex));
                 }
             }
             else searching = false;
@@ -77,8 +69,17 @@ namespace Algorithms {
             return vertices;
         }
 
-        public override IEnumerable<string> visitedEdges() { return edges; }
-        public override string frontierEdge() { return edge; }
+        public override IEnumerable<int> frontierVertices() { return null; }
+
+        public override IEnumerable<(int, int)> visitedEdges() {
+            return _visitedEdges;
+        }
+
+        public override IEnumerable<(int, int)> frontierEdges() {
+            return _frontierEdges;
+        }
+
+        public override bool running() { return searching; }
 
         void initValues() {
             foreach (var vertex in graph.vertices()) visited[vertex] = false;
@@ -112,16 +113,23 @@ namespace Algorithms {
             stack.Push(key);
         }
 
-        void step(int vertex) {
-            int weight = graph.getWeight(vertex);
+        void step() {
+            currentVertex = stack.Pop();
 
-            if (total[vertex].ttl < total[currentVertex].ttl + weight) {
-                total[vertex].ttl = total[currentVertex].ttl + weight;
-                total[vertex].str = total[currentVertex].str + vertex + " ";
+            if (total[currentVertex].ttl != MIN) {
+                foreach(var vertex in graph.neighbors(currentVertex)) {
+                    int weight = graph.getWeight(vertex);
 
-                if (total[vertex].ttl > finResult) {
-                    finResult = total[vertex].ttl;
-                    path = total[vertex].str;
+                    if (total[vertex].ttl < total[currentVertex].ttl + weight) {
+                        total[vertex].ttl = total[currentVertex].ttl + weight;
+                        total[vertex].str = total[currentVertex].str
+                                            + vertex + " ";
+
+                        if (total[vertex].ttl > finResult) {
+                            finResult = total[vertex].ttl;
+                            path = total[vertex].str;
+                        }
+                    }
                 }
             }
         }

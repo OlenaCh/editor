@@ -34,8 +34,7 @@ namespace GraphEditor {
 
         Algorithm algorithm;
         bool algorithmRunning = false;
-        List<int> foundPath = new List<int>();
-        List<string> spanningTree = new List<string>();
+        List<(int, int)> foundResult = new List<(int, int)>();
 
         public Editor(string name) : base(name) { configure(); }
 
@@ -58,6 +57,7 @@ namespace GraphEditor {
             DeleteEvent += delegate { Application.Quit(); };
             KeyPressEvent += onKeyPressed;
             KeyReleaseEvent += onKeyReleased;
+            ExposeEvent += onExpose;
 
             MenuBar mb = createMenuBar();
             algorithmStatus = new Label();

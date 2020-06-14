@@ -7,31 +7,31 @@ namespace Algorithms {
     using Graphs;
 
     class PrimsAlgorithm : Algorithm {
+        Graph graph;
+
+        SortedDictionary<int, bool> visited = new SortedDictionary<int, bool>();
         SortedDictionary<int, int> parent = new SortedDictionary<int, int>();
         SortedDictionary<int, double> dist = new SortedDictionary<int, double>();
 
-        List<string> edges = new List<string>();
-        string edge = "";
+        List<(int, int)> _visitedEdges = new List<(int, int)>();
+        List<(int, int)> _frontierEdges = new List<(int, int)>();
 
-        int currentVertex, totalCount = 0, adjacentCount = 0;
-        List<int> adjacent;
+        bool searching = false;
 
-        public PrimsAlgorithm(Graph graph) : base(graph) { initValues(); }
+        int currentVertex, totalCount = 0;
+
+        public PrimsAlgorithm(Graph graph) {
+            this.graph = graph;
+            initValues();
+        }
 
         public override void search() {
             int size = graph.vertices().Count();
-
-            for (int i = 0; i < size; i++) {
-                currentVertex = minKey();
-                if (currentVertex > 0) visited[currentVertex] = true;
-                foreach (var vertex in graph.neighbors(currentVertex))
-                    step(currentVertex, vertex);
-            }
-
+            for (int i = 0; i < size; i++) step();
             searching = false;
         }
 
-        public override string result() {
+        public override Result result() {
             string path = "";
 
             foreach (var vertex in parent.Keys) {
@@ -43,37 +43,41 @@ namespace Algorithms {
                 }
             }
 
-            if (path == "") return "unreachable";
-            else return path;
+            if (path == "") path = "unreachable";
+            return new SpanningTreeResult(path);
         }
 
         public override void executeSearchStep() {
             if (totalCount < graph.vertices().Count()) {
-                if (currentVertex <= 0) {
-                    currentVertex = minKey();
-                    if (currentVertex > 0) visited[currentVertex] = true;
-                    adjacent = graph.neighbors(currentVertex).ToList();
-                    totalCount++;
+                step();
+
+                if (currentVertex > 0) {
+                    if (_frontierEdges.Count() >= 1) {
+                        foreach (var edge in _frontierEdges)
+                            _visitedEdges.Add(edge);
+                        _frontierEdges = new List<(int, int)>();
+                    }
+                    foreach(var vertex in graph.neighbors(currentVertex))
+                        _frontierEdges.Add((currentVertex, vertex));
                 }
 
-                if (edge != "") edges.Add(edge);
-
-                if (adjacentCount < adjacent.Count) {
-                    step(currentVertex, adjacent[adjacentCount]);
-                    edge = currentVertex + " " + adjacent[adjacentCount];
-                    adjacentCount++;
-                }
-                else {
-                    currentVertex = 0;
-                    edge = "";
-                    adjacentCount = 0;
-                }
+                totalCount++;
             }
             else searching = false;
         }
 
-        public override IEnumerable<string> visitedEdges() { return edges; }
-        public override string frontierEdge() { return edge; }
+        public override IEnumerable<int> visitedVertices() { return null; }
+        public override IEnumerable<int> frontierVertices() { return null; }
+
+        public override IEnumerable<(int, int)> visitedEdges() {
+            return _visitedEdges;
+        }
+
+        public override IEnumerable<(int, int)> frontierEdges() {
+            return _frontierEdges;
+        }
+
+        public override bool running() { return searching; }
 
         void initValues() {
             int count = 0;
@@ -81,7 +85,7 @@ namespace Algorithms {
             foreach (var vertex in graph.vertices()) {
                 visited[vertex] = false;
                 parent[vertex] = -1;
-                if (count == 0) dist[vertex] = 0.0;
+                if (count == 0) dist[vertex] = 1.0;
                 else dist[vertex] = double.PositiveInfinity;
                 count++;
             }
@@ -89,11 +93,17 @@ namespace Algorithms {
             searching = true;
         }
 
-        void step(int a, int b) {
-            double d = graph.getDistance(a, b);
-            if (d >= 0.0 && !visited[b] && d < dist[b]) {
-                parent[b] = a;
-                dist[b] = d;
+        void step() {
+            currentVertex = minKey();
+            if (currentVertex > 0) {
+                visited[currentVertex] = true;
+                foreach (var vertex in graph.neighbors(currentVertex)) {
+                    double d = graph.getDistance(currentVertex, vertex);
+                    if (d > 0.0 && !visited[vertex] && d < dist[vertex]) {
+                        parent[vertex] = currentVertex;
+                        dist[vertex] = d;
+                    }
+                }
             }
         }
 
@@ -112,4 +122,3 @@ namespace Algorithms {
         }
     }
 }
-

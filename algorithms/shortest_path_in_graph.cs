@@ -18,13 +18,18 @@ namespace Algorithms {
             }
         }
 
+        Graph graph;
         int start, end;
+
+        SortedDictionary<int, bool> visited = new SortedDictionary<int, bool>();
 
         Queue<Node<int>> queue = new Queue<Node<int>>();
         Node<int> curr;
 
-        public ShortestPathInGraph(Graph graph, int start, int end)
-        : base(graph) {
+        bool searching = false;
+
+        public ShortestPathInGraph(Graph graph, int start, int end) {
+            this.graph = graph;
             this.start = start;
             this.end = end;
             initValues();
@@ -36,9 +41,9 @@ namespace Algorithms {
             searching = false;
         }
 
-        public override string result() {
-            if (curr != null) return shortestPath();
-            else return "unreachable";
+        public override Result result() {
+            string path = (curr != null) ? shortestPath() : "unreachable";
+            return new PathResult(path);
         }
 
         public override void executeSearchStep() {
@@ -58,6 +63,11 @@ namespace Algorithms {
             foreach (var vertex in queue) vertices.Add(vertex.val);
             return vertices;
         }
+
+        public override IEnumerable<(int, int)> visitedEdges() { return null; }
+        public override IEnumerable<(int, int)> frontierEdges() { return null; }
+
+        public override bool running() { return searching; }
 
         void initValues() {
             foreach (var vertex in graph.vertices()) visited[vertex] = false;

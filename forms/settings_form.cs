@@ -12,6 +12,7 @@ namespace Forms {
         Dictionary<string, bool> oldSettings, newSettings;
         List<RadioButton> radioBtns = new List<RadioButton>();
         CheckButton checkBtn;
+        int index = -1;
 
         public SettingsForm() : base(Strings.S_FORM) {
             oldSettings = Editor.getSettings();
@@ -79,6 +80,8 @@ namespace Forms {
                 hbox.PackStart(btn, false, true, 5);
                 btn.Active = oldSettings[item];
                 radioBtns.Add(btn);
+
+                if (Strings.UNDIRECTED == item) index = radioBtns.Count - 1;
             }
 
             return hbox;
@@ -99,6 +102,13 @@ namespace Forms {
         }
 
         void onSaveBtn(object sender, EventArgs args) {
+            if (index >= 0
+                && radioBtns[index].Active != oldSettings[Strings.UNDIRECTED])
+                displayUserWarning();
+            else updateSettings();
+        }
+
+        void displayUserWarning() {
             Dialog dialog = new Dialog(
                 Strings.INFO,
                 this,
@@ -110,15 +120,17 @@ namespace Forms {
             dialog.VBox.Add(new Label(Strings.NEW_GRAPH_TIP));
             dialog.ShowAll();
 
-            if (dialog.Run() == (int)ResponseType.Yes) {
-                foreach (var btn in radioBtns)
-                    newSettings[btn.Label.ToString()] = btn.Active;
-                newSettings[Strings.DISTANCES] = checkBtn.Active;
-                Editor.setSettings(newSettings);
-                Destroy();
-            }
+            if (dialog.Run() == (int)ResponseType.Yes) updateSettings();
 
             dialog.Destroy();
+        }
+
+        void updateSettings() {
+            foreach (var btn in radioBtns)
+                newSettings[btn.Label.ToString()] = btn.Active;
+            newSettings[Strings.DISTANCES] = checkBtn.Active;
+            Editor.setSettings(newSettings);
+            Destroy();
         }
     }
 }

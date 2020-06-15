@@ -55,7 +55,7 @@ namespace GraphEditor {
         }
 
         void onPrimsAlgoritmClicked(object sender, EventArgs args) {
-            if (!settings[Strings.DISTANCES] || settings[Strings.DIRECTED]) {
+            if (!settings[Strings.EDGE_WEIGHTS] || settings[Strings.DIRECTED]) {
                 showUserInfo(Strings.PRIMS_TIP);
                 return;
             }
@@ -64,10 +64,7 @@ namespace GraphEditor {
         }
 
         void onStopClicked(object sender, EventArgs args) {
-            algorithm = null;
-            algorithmRunning = false;
-            algorithmStatus.Text = "";
-            foundResult = new List<(int, int)>();
+            clearAlgorithmRelatedData();
             if (settings[Strings.MANUAL]) drawGraph();
         }
 

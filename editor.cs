@@ -21,7 +21,7 @@ namespace GraphEditor {
                 { Strings.DIRECTED, false },
                 { Strings.MANUAL, false },
                 { Strings.AUTO, true },
-                { Strings.DISTANCES, false }
+                { Strings.EDGE_WEIGHTS, false }
             };
         public static int start, end;
         public static bool directionsUpdate = false;
@@ -34,7 +34,7 @@ namespace GraphEditor {
 
         Algorithm algorithm;
         bool algorithmRunning = false;
-        List<(int, int)> foundResult = new List<(int, int)>();
+        List<(int, int)> foundResult;
 
         public Editor(string name) : base(name) { configure(); }
 
@@ -51,7 +51,6 @@ namespace GraphEditor {
         }
 
         void configure() {
-            newGraph();
             SetDefaultSize(900, 900);
 
             DeleteEvent += delegate { Application.Quit(); };
@@ -70,6 +69,8 @@ namespace GraphEditor {
             Add(vbox);
 
             ShowAll();
+
+            newGraph();
         }
 
         void createDrawingArea() {

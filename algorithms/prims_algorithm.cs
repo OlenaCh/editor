@@ -98,7 +98,7 @@ namespace Algorithms {
             if (currentVertex > 0) {
                 visited[currentVertex] = true;
                 foreach (var vertex in graph.neighbors(currentVertex)) {
-                    double d = graph.getDistance(currentVertex, vertex);
+                    double d = graph.getEdgeWeight(currentVertex, vertex);
                     if (d > 0.0 && !visited[vertex] && d < dist[vertex]) {
                         parent[vertex] = currentVertex;
                         dist[vertex] = d;

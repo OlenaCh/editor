@@ -14,7 +14,7 @@ namespace GraphEditor {
     partial class Editor : Gtk.Window {
         GraphWithInterface graph;
         Dictionary<int, PointD> pos = new Dictionary<int, PointD>();
-        Dictionary<string, PointD> distancesPos =
+        Dictionary<string, PointD> edgeWeightsPos =
             new Dictionary<string, PointD>();
 
         string filepath = "";
@@ -43,8 +43,7 @@ namespace GraphEditor {
 
             pos = new Dictionary<int, PointD>();
             selected = 0;
-            algorithm = null;
-            algorithmRunning = false;
+            clearAlgorithmRelatedData();
         }
 
         /*
@@ -81,6 +80,13 @@ namespace GraphEditor {
             return foundResult.Contains((a, b)) || foundResult.Contains((b, a));
         }
 
+        void clearAlgorithmRelatedData() {
+            algorithm = null;
+            algorithmRunning = false;
+            algorithmStatus.Text = "";
+            foundResult = new List<(int, int)>();
+        }
+
         /*
          * Point related
          */
@@ -92,8 +98,8 @@ namespace GraphEditor {
             return 0;
         }
 
-        string distancePointExists(double x, double y) {
-            foreach(var edge in distancesPos) {
+        string edgeWeightPointExists(double x, double y) {
+            foreach(var edge in edgeWeightsPos) {
                 if (pointExists(edge.Value, x, y)) return edge.Key;
             }
 
@@ -119,21 +125,22 @@ namespace GraphEditor {
             return (new Vector(a, b, diff)).arrowTipPoint();
         }
 
-        PointD distanceCoords(PointD a, PointD b) {
+        PointD edgeWeightCoords(PointD a, PointD b) {
             return (new Vector(a, b, 15.0)).edgeWeightPoint();
         }
 
         /*
-         * Distance related
+         * Edge weight related
          */
-        bool updateDistancePosition(int a, int b, PointD dist) {
+        bool updateEdgeWeightPosition(int a, int b, PointD dist) {
             string strA = a + " " + b;
             string strB = b + " " + a;
 
-            if (distancesPos.ContainsKey(strA) || distancesPos.ContainsKey(strB))
+            if (edgeWeightsPos.ContainsKey(strA)
+                || edgeWeightsPos.ContainsKey(strB))
                 return false;
 
-            distancesPos[strA] = dist;
+            edgeWeightsPos[strA] = dist;
             return true;
         }
 
@@ -167,8 +174,8 @@ namespace GraphEditor {
             dialog.Destroy();
         }
 
-        string getNewEdgeDistance() {
-            return userInputDialog(Strings.DIST_WARNING);
+        string getNewEdgeWeight() {
+            return userInputDialog(Strings.EDGE_WARNING);
         }
 
         string getNewVertexWeight() {

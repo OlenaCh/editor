@@ -32,9 +32,9 @@ namespace Forms {
 
             vbox.PackStart(new Label(Strings.G_DETAILS), false, true, 5);
 
-            checkBtn = new CheckButton(Strings.DISTANCES_MSG);
+            checkBtn = new CheckButton(Strings.EDGE_WEIGHT_MSG);
             vbox.PackStart(checkBtn, false, true, 5);
-            checkBtn.Active = oldSettings[Strings.DISTANCES];
+            checkBtn.Active = oldSettings[Strings.EDGE_WEIGHTS];
 
             vbox.PackStart(
                 createRadioGroup(new List<string>() {
@@ -128,7 +128,7 @@ namespace Forms {
         void updateSettings() {
             foreach (var btn in radioBtns)
                 newSettings[btn.Label.ToString()] = btn.Active;
-            newSettings[Strings.DISTANCES] = checkBtn.Active;
+            newSettings[Strings.EDGE_WEIGHTS] = checkBtn.Active;
             Editor.setSettings(newSettings);
             Destroy();
         }

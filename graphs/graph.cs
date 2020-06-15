@@ -11,7 +11,7 @@ namespace Graphs {
             EDGE_ADDED,
             EDGE_DELETED,
             WEIGHT_CHANGED,
-            DISTANCE_CHANGED
+            EDGE_WEIGHT_CHANGED
         };
 
         public delegate void Notify(Graph.Events evnt, int id);
@@ -82,14 +82,14 @@ namespace Graphs {
             return -1;
         }
 
-        // Methods dealing with distance
-        public virtual void setDistance(int a, int b, double dist) {
+        // Methods dealing with edge weights
+        public virtual void setEdgeWeight(int a, int b, double dist) {
             vertex[a][b] = dist;
             vertex[b][a] = dist;
-            onChange(Events.DISTANCE_CHANGED, a);
+            onChange(Events.EDGE_WEIGHT_CHANGED, a);
         }
 
-        public double getDistance(int a, int b) {
+        public double getEdgeWeight(int a, int b) {
             if (vertex.ContainsKey(a) && vertex[a].ContainsKey(b))
                 return vertex[a][b];
             return -1.0;

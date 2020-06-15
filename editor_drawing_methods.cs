@@ -45,8 +45,8 @@ namespace GraphEditor {
                 frontier = algorithm.frontierEdges();
             }
 
-            if (settings[Strings.DISTANCES])
-                distancesPos = new Dictionary<string, PointD>();
+            if (settings[Strings.EDGE_WEIGHTS])
+                edgeWeightsPos = new Dictionary<string, PointD>();
 
             foreach (var v in vertices) {
                 IEnumerable<int> neighbors = graph.neighbors(v);
@@ -81,15 +81,15 @@ namespace GraphEditor {
                         );
                     }
 
-                    if (settings[Strings.DISTANCES]) {
-                        PointD dist = distanceCoords(pos[v], pos[n]);
-                        if (updateDistancePosition(v, n, dist))
+                    if (settings[Strings.EDGE_WEIGHTS]) {
+                        PointD dist = edgeWeightCoords(pos[v], pos[n]);
+                        if (updateEdgeWeightPosition(v, n, dist))
                             drawText(
                                 cr,
                                 dist.X,
                                 dist.Y,
                                 0.0,
-                                graph.getDistance(v, n).ToString()
+                                graph.getEdgeWeight(v, n).ToString()
                             );
                     }
                 }

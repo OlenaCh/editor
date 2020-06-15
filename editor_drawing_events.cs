@@ -31,7 +31,7 @@ namespace GraphEditor {
                 case Graph.Events.EDGE_ADDED:
                 case Graph.Events.EDGE_DELETED:
                 case Graph.Events.WEIGHT_CHANGED:
-                case Graph.Events.DISTANCE_CHANGED:
+                case Graph.Events.EDGE_WEIGHT_CHANGED:
                 default:
                     break;
             }
@@ -92,8 +92,8 @@ namespace GraphEditor {
                 int ind = vertexPointExists(args.Event.X, args.Event.Y);
                 string edge = "";
 
-                if (settings[Strings.DISTANCES])
-                    edge = distancePointExists(args.Event.X, args.Event.Y);
+                if (settings[Strings.EDGE_WEIGHTS])
+                    edge = edgeWeightPointExists(args.Event.X, args.Event.Y);
 
                 if (ShiftPressed && ind >= 0) {
                     clicked = new PointD(args.Event.X, args.Event.Y);
@@ -108,13 +108,13 @@ namespace GraphEditor {
                     return;
                 }
 
-                if (settings[Strings.DISTANCES] && edge != "") {
+                if (settings[Strings.EDGE_WEIGHTS] && edge != "") {
                     string[] vertices = edge.Split();
                     var isNumeric =
-                        double.TryParse(getNewEdgeDistance(), out double n);
+                        double.TryParse(getNewEdgeWeight(), out double n);
 
                     if (isNumeric)
-                        graph.setDistance(
+                        graph.setEdgeWeight(
                             Int32.Parse(vertices[0]),
                             Int32.Parse(vertices[1]),
                             n

@@ -92,8 +92,7 @@ namespace Algorithms {
 
             if (stack.Count > 0) {
                 int start = stack.Peek();
-                total[start].ttl = graph.getWeight(start);
-                total[start].str = start + " ";
+                setVertexSortingData(start);
             }
 
             searching = true;
@@ -116,22 +115,27 @@ namespace Algorithms {
         void step() {
             currentVertex = stack.Pop();
 
-            if (total[currentVertex].ttl != MIN) {
-                foreach(var vertex in graph.neighbors(currentVertex)) {
-                    int weight = graph.getWeight(vertex);
+            if (total[currentVertex].ttl == MIN)
+                setVertexSortingData(currentVertex);
 
-                    if (total[vertex].ttl < total[currentVertex].ttl + weight) {
-                        total[vertex].ttl = total[currentVertex].ttl + weight;
-                        total[vertex].str = total[currentVertex].str
-                                            + vertex + " ";
+            foreach(var vertex in graph.neighbors(currentVertex)) {
+                int weight = graph.getWeight(vertex);
 
-                        if (total[vertex].ttl > finResult) {
-                            finResult = total[vertex].ttl;
-                            path = total[vertex].str;
-                        }
+                if (total[vertex].ttl <= total[currentVertex].ttl + weight) {
+                    total[vertex].ttl = total[currentVertex].ttl + weight;
+                    total[vertex].str = total[currentVertex].str + vertex + " ";
+
+                    if (total[vertex].ttl > finResult) {
+                        finResult = total[vertex].ttl;
+                        path = total[vertex].str;
                     }
                 }
             }
+        }
+
+        void setVertexSortingData(int vertex) {
+            total[vertex].ttl = graph.getWeight(vertex);
+            total[vertex].str = vertex + " ";
         }
     }
 }
